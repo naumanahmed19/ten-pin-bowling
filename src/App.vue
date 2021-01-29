@@ -8,8 +8,10 @@
         {{player.name}} | TotalScore : {{getScore(index)}}
         <table border="1">
           <tr>
-            <td v-for="(fram,index) in player.frames" :key="index" >
-                {{fram}}
+            <td v-for="(frame,index) in player.frames" :key="index" >
+                {{frame}}
+                <hr>
+                {{calculeFrameScore(frame)}}
             </td>
           </tr>
         </table>
@@ -57,14 +59,27 @@ export default {
     },
 
     calculateScore(frames){
-      let finalScore = 0;
-      frames.forEach(element => {
+      let score = 0;
+      frames.forEach(frame => {
+        score += this.calculeFrameScore(frame);
       });
-      return finalScore;
+      return score;
     },
 
     calculeFrameScore(frame){
-    
+      let s = 0;
+      if(frame[0] == 'X'){
+          s +=10;
+          //Add Bouns
+      }
+      else if(frame[1] == '/'){
+          s+=10;
+           //Add Bouns
+      }
+      else{
+        s += frame.reduce((a,b)=>a+b , 0);
+      }
+      return s;
     }
   },
 }
