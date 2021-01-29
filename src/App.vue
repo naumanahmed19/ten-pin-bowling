@@ -2,10 +2,17 @@
   <ScoreBoard />
   <h3>Current Turn : {{players[currentPlayer].name}}</h3>
   <button @click="changeTurn(1)">Change Turn</button>
-
   <ul>
       <li v-for="(player,index) in players" :key="index">
-        {{player.name}} | Score : {{getScore(index)}}
+        <br> <br> <br>
+        {{player.name}} | TotalScore : {{getScore(index)}}
+        <table border="1">
+          <tr>
+            <td v-for="(fram,index) in player.frames" :key="index" >
+                {{fram}}
+            </td>
+          </tr>
+        </table>
       </li>
   </ul>
 </template>
@@ -23,14 +30,13 @@ export default {
       currentPlayer : 0,
       players: [
       {
-  
         name: 'Ahmad',
-        score: [],
+        frames:[[8,'/'],[9,0],[4,4],[7,2],[9,0],['X'],['X'],[8,0],[3,5],[9,1,7]]
       },
       {
 
         name: 'Ali',
-        score: [],
+        frames:[[8,0],[7,0],[5,3],[9,'/'],[9,'/'],['X'],[8,0],[5,1],[3,'/'],[9,0,0]],
       }
     ],
     }
@@ -42,16 +48,23 @@ export default {
     },
 
     updateScore(s){
-      this.players[this.currentPlayer].score.push(s)
+      this.players[this.currentPlayer].frames.push(s)
     },
 
     getScore(index){
-      let playerScore = this.players[index].score;
+      let playerScore = this.players[index].frames;
       return this.calculateScore(playerScore);
     },
 
-    calculateScore(score){
-      //calculate score here.
+    calculateScore(frames){
+      let finalScore = 0;
+      frames.forEach(element => {
+      });
+      return finalScore;
+    },
+
+    calculeFrameScore(frame){
+    
     }
   },
 }
