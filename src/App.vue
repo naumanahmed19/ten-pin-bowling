@@ -40,7 +40,7 @@ export default {
       {
         name: 'Ahmad',
     //frames: [['X'],['X'],['X'],['X'],['X'],['X'],['X'],['X'],['X'],['X','X','X']],
-     frames:[[8,'/'],[9,0],[4,4],[7,2],[9,0],['X'],['X'],[8,0],[3,5],[9,1,7]],
+      frames:[[8,'/'],[9,0],[4,4],[7,2],[9,0],['X'],['X'],[8,0],[3,5],[9,'/',7]],
      //frames: [['X'],['X'],['X'],[5,1],['X'],['X'],['X'],['X'],['X'],['X','X','X']],
         faramScore:[],
       },
@@ -118,12 +118,23 @@ export default {
 
 
           //Add Bouns
-      }
-      else if(frame.includes( '/')){ 
+      } 
+      else if(frame.includes( '/') && index < 9){ 
           s += 10 + this.spareBouns(frames,index);
       }
       else{
-        s += frame.reduce((a,b)=>this.format(a)+this.format(b) , 0);
+        /**
+         * if last frame has spare 
+         */
+        if(frame.includes( '/')){
+           let spareIndex = frame.indexOf('/');
+           let f = frame.filter(s=>(s !=='/'));
+           s+= 10- frame[spareIndex -1]; 
+           s += f.reduce((a,b)=>this.format(a)+this.format(b) , 0);
+        }else{
+            s += frame.reduce((a,b)=>this.format(a)+this.format(b) , 0);
+        } 
+       
       }
       return s;
     },
@@ -144,7 +155,7 @@ export default {
 
     format(v){
       if(v === 'X') return 10;
-      if(v === '/') return 10 - v;
+      if(v === '/') return 10;
       return v;
     }
   },
