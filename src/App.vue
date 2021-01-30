@@ -120,7 +120,6 @@ export default {
     },
     
     spareBouns(frames,index){
-        console.log(frames[index+1][0]);
       return this.format(frames[index+1][0]);
     },
 
@@ -139,9 +138,6 @@ export default {
              s += this.sum(frames[index+1]);
           }
           return s;
- 
-     // return this.calculeFrameScore(frames,frames[index+1], index+1);
-     
     },
 
     format(v){
