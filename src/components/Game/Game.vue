@@ -1,8 +1,11 @@
 <template>
   <ScoreBoard />
   
+  <div v-if="isGameActive">
   <button @click="handleStartNewGame">Start New Game</button>
-  <button @click="handleResetGame">Replay Game</button>
+  <button @click="handleResetGame" >Replay Game</button>
+  </div>
+ 
   <hr>
 
   <div v-if="!isGameActive">
@@ -24,7 +27,7 @@
   <div v-if="isGameActive &&  players.length">
       <h3>Current Turn : {{players[currentPlayer].name}}</h3>
   <button @click="changeTurn(1)">Change Turn</button>
-    <button @click="handleRestGame">Reset Game</button>
+ 
   <ul>
       <li v-for="(player,index) in players" :key="index">
         <br> <br> <br>
@@ -94,8 +97,8 @@ export default {
      * Starting a new game
      * Reset all players data
      */
-    handleNewStartGame(){
-      this.isGameActive = true;
+    handleStartNewGame(){
+      this.isGameActive = false;
       this.players = [];
     },
 
@@ -115,7 +118,7 @@ export default {
       this.playerName ='';
     },
 
-    handleRestGame(){
+    handleResetGame(){
       this.players.forEach((fram,index)=>{
        this.players[index].frames = [];
          this.players[index].faramScore = [];
