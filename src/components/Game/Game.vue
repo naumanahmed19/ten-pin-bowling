@@ -10,8 +10,6 @@
 
   <hr />
 
- 
-
   <div v-if="!isGameActive">
     Add Players:
     <input type="text" v-model="playerName" />
@@ -31,12 +29,15 @@
     {{ players[currentPlayer] }}
     <h3>Current Turn : {{ players[currentPlayer].name }}</h3>
 
-    <PlayerControls v-if="isGameActive && !isGameOver" :throws="throws" @click="handleThorw"  />
+    <PlayerControls
+      v-if="isGameActive && !isGameOver"
+      :throws="throws"
+      @click="handleThorw"
+    />
   </div>
-   <div v-if="isGameOver">Game Over </div>
+  <div v-if="isGameOver">Game Over</div>
 
-
-    <div v-if="isGameActive && players.length">
+  <div v-if="isGameActive && players.length">
     <ul>
       <li v-for="(player, index) in players" :key="index">
         <br />
@@ -88,7 +89,6 @@ export default {
       activeFrameIndex: 0,
       throws: [],
 
-
       players: [
         // {
         //   name: 'Ahmad',
@@ -112,7 +112,7 @@ export default {
      */
     handleStartGame() {
       this.isGameActive = true;
-      this.isGameOver=false;
+      this.isGameOver = false;
       this.throws = [];
     },
 
@@ -122,17 +122,17 @@ export default {
      */
     handleStartNewGame() {
       this.isGameActive = false;
-      this.isGameOver=false;
+      this.isGameOver = false;
       this.players = [];
       this.throws = [];
     },
 
-     /**
+    /**
      * Replay A Game with same players
      */
     handleResetGame() {
       this.throws = [];
-      this.isGameOver=false;
+      this.isGameOver = false;
 
       this.players.forEach((fram, index) => {
         this.players[index].frames = [];
@@ -161,8 +161,7 @@ export default {
     },
 
     nextPlayerTurn() {
-
-       this.checkGameStatus();
+      this.checkGameStatus();
       //before next go to next player
       this.players[this.currentPlayer].fIndex++;
 
@@ -174,22 +173,22 @@ export default {
         this.currentPlayer++;
       }
       this.throws = [];
-
-     
-
     },
 
-   /**
+    /**
      * Check if game is over
      *
      */
-    checkGameStatus(){
-      if(this.currentPlayer == this.players.length-1 && this.players[this.currentPlayer].frameCounter ==12){
-          console.log('Game Over');
-          this.isGameOver = true;
+    checkGameStatus() {
+      if (
+        this.currentPlayer == this.players.length - 1 &&
+        this.players[this.currentPlayer].frameCounter == 12
+      ) {
+        console.log("Game Over");
+        this.isGameOver = true;
       }
     },
-    
+
     /**
      * Update frames with choices based on active player
      *
@@ -216,14 +215,11 @@ export default {
         } else {
           this.throws.push(pins);
         }
-    
       } else {
         if (pins == 10) {
           this.throws.push("X");
-  
         } else if (this.throws.length && this.throws[0] + pins == 10) {
           this.throws.push("/");
-       
         } else {
           this.throws.push(pins);
         }
@@ -249,7 +245,6 @@ export default {
           if (throws.length == 1) {
             this.players[this.currentPlayer].frames.push(throws);
           } else {
-
             let length = this.players[this.currentPlayer].frames.length;
 
             this.players[this.currentPlayer].frames[length - 1].push(throws[1]);
@@ -259,7 +254,8 @@ export default {
             this.nextPlayerTurn();
           }
         }
-      } else { //on last frame
+      } else {
+        //on last frame
         if (typeof this.players[this.currentPlayer].frames[9] == "undefined") {
           this.players[this.currentPlayer].frames.push(throws);
           this.players[this.currentPlayer].frameCounter++;
@@ -270,13 +266,11 @@ export default {
         }
       }
 
-      
       /**
        * Update frames on every chagne
        */
       this.players[this.currentPlayer].faramScore = [];
       this.getScore(this.currentPlayer);
-
 
       /**
        * Switching player on last frame
@@ -286,9 +280,6 @@ export default {
         this.getScore(this.currentPlayer);
       }
     },
-
-
-
 
     getPlayerScore(index) {
       let { faramScore } = this.players[index];
