@@ -25,7 +25,7 @@
       }
 
       _sum(frame){
-          return frame.reduce((a,b)=>this._format(a)+this._format(b) , 0);
+          return frame ? frame.reduce((a,b)=>this._format(a)+this._format(b) , 0) : 0;
       }
   
       _caulculateLastFrame(frame){
@@ -45,7 +45,10 @@
       }
       
       _spareBouns(frames,index){
-        return this._format(frames[index+1][0]);
+        if(frames[index+1] && frames[index+1][0]){
+          return this._format(frames[index+1][0]);
+        }
+        return 0;
       }
   
        _strikeBouns(frames,index){
@@ -65,8 +68,7 @@
             return s;
       }
       _format(v){
-        if(v === 'X') return 10;
-        if(v === '/') return 10;
+        if(v === 'X' || v === '/') return 10;
         return v;
       }
 }
