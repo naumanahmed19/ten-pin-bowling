@@ -43,7 +43,7 @@
         <br />
         <br />
         <br />
-        {{ player.name }} |
+        {{ player.name }} | Wins  {{ player.wins }}
         <table border="1">
           <tr>
             <td v-for="(n, i) in 10" :key="i">
@@ -153,11 +153,28 @@ export default {
           faramScore: [],
           frameCounter: 0, //max 12
           fIndex: 0,
+          wins : 0,
         });
       }
 
       //reset field
       this.playerName = "";
+    },
+    /**
+     * Winner Selection
+     */
+    selectWinner(){
+      let highestScore = 0;
+      let playerIndex;
+      this.players.forEach((player,index)=>{
+        let playerScore = this.getPlayerScore(index);
+         if(playerScore > highestScore ){
+            highestScore = playerScore;
+            playerIndex = index;
+         }
+      });
+
+      this.players[playerIndex].wins++; 
     },
 
     nextPlayerTurn() {
@@ -186,6 +203,7 @@ export default {
       ) {
         console.log("Game Over");
         this.isGameOver = true;
+        this.selectWinner();
       }
     },
 
