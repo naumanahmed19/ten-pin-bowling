@@ -2,12 +2,11 @@
   <ScoreBoard />
   {{ throws }}
 
-  <GameControls 
-    v-if="isGameActive" 
-    @new="handleStartNewGame" 
+  <GameControls
+    v-if="isGameActive"
+    @new="handleStartNewGame"
     @replay="handleResetGame"
   />
-
 
   <hr />
 
@@ -27,11 +26,10 @@
   </div>
 
   <div v-if="isGameActive && players.length">
+    {{ players[currentPlayer] }}
     <h3>Current Turn : {{ players[currentPlayer].name }}</h3>
-    <button @click="changeTurn(1)">Change Turn</button>
 
-    
-      <PlayerControls :throws="throws" @click="handleThorw" /> 
+    <PlayerControls :throws="throws" @click="handleThorw" />
     <ul v-if="players.length">
       <li v-for="(player, index) in players" :key="index">
         <br />
@@ -64,7 +62,7 @@
 <script>
 import ScoreBoard from "./ScoreBoard.vue";
 import Score from "./Score";
-import PlayerControls from "./Controls.vue";
+import PlayerControls from "./PlayerControls.vue";
 import GameControls from "./GameControls.vue";
 export default {
   name: "Game",
@@ -127,12 +125,27 @@ export default {
           name: this.playerName,
           frames: [],
           faramScore: [],
-          frameCounter: 0,
+          frameCounter: 0, //max 12
+          fIndex: 0,
         });
       }
 
       //reset field
       this.playerName = "";
+    },
+
+    nextPlayerTurn() {
+      //before next go to next player
+      this.players[this.currentPlayer].fIndex++;
+
+      console.log("move to next palyer");
+
+      if (this.currentPlayer + 1 == this.players.length) {
+        this.currentPlayer = 0;
+      } else {
+        this.currentPlayer++;
+      }
+      this.throws = [];
     },
 
     /**
@@ -143,9 +156,10 @@ export default {
       /**
        * Allow max 12 frames
        */
-      this.players[this.currentPlayer].frameCounter++;
+
       let { frameCounter } = this.players[this.currentPlayer];
-      if (frameCounter > 12) return;
+      if (frameCounter > 11) return;
+      console.log("out-----------------", frameCounter);
 
       if (
         this.isFrame(9) ||
@@ -160,41 +174,78 @@ export default {
         } else {
           this.throws.push(pins);
         }
-        this.updatePlayerFrame();
+    
       } else {
         if (pins == 10) {
           this.throws.push("X");
-          this.updatePlayerFrame();
+  
         } else if (this.throws.length && this.throws[0] + pins == 10) {
           this.throws.push("/");
-          this.updatePlayerFrame();
+       
         } else {
           this.throws.push(pins);
-          if (this.throws.length == 2) {
-            this.updatePlayerFrame();
-          }
         }
       }
+      this.nextupdatePlayerFrame();
     },
     isFrame(n) {
       return this.players[this.currentPlayer].frames.length == n;
     },
+    nextupdatePlayerFrame() {
+      let throws = [...this.throws];
 
-    updatePlayerFrame() {
-      if (this.activeFrameIndex == 10) {
-        this.players[this.currentPlayer].frames[9] = this.throws;
-      } else {
-        this.players[this.currentPlayer].frames.push(this.throws);
-        if (this.activeFrameIndex < 9) this.throws = [];
-        this.activeFrameIndex++;
+      //push in frames - move to next frame - empty throws
+
+      if (this.players[this.currentPlayer].fIndex < 9) {
+        if (throws.includes("X")) {
+          this.players[this.currentPlayer].frames.push(throws);
+
+          this.players[this.currentPlayer].frameCounter++;
+
+          this.nextPlayerTurn();
+        } else {
+          if (throws.length == 1) {
+            this.players[this.currentPlayer].frames.push(throws);
+          } else {
+
+            let length = this.players[this.currentPlayer].frames.length;
+
+            this.players[this.currentPlayer].frames[length - 1].push(throws[1]);
+
+            this.players[this.currentPlayer].frameCounter++;
+
+            this.nextPlayerTurn();
+          }
+        }
+      } else { //on last frame
+        if (typeof this.players[this.currentPlayer].frames[9] == "undefined") {
+          this.players[this.currentPlayer].frames.push(throws);
+          this.players[this.currentPlayer].frameCounter++;
+          console.log("new value....");
+        } else {
+          this.players[this.currentPlayer].frames[9] = throws;
+          this.players[this.currentPlayer].frameCounter++;
+        }
       }
+
+      
+      /**
+       * Update frames on every chagne
+       */
       this.players[this.currentPlayer].faramScore = [];
       this.getScore(this.currentPlayer);
+
+
+      /**
+       * Switching player on last frame
+       */
+      if (this.players[this.currentPlayer].fIndex >= 9 && throws.length == 3) {
+        this.nextPlayerTurn();
+        this.getScore(this.currentPlayer);
+      }
     },
 
-    updateActivePlayer(p) {
-      this.currentPlayer = p;
-    },
+
 
     handleResetGame() {
       this.throws = [];
@@ -202,6 +253,8 @@ export default {
       this.players.forEach((fram, index) => {
         this.players[index].frames = [];
         this.players[index].faramScore = [];
+        this.players[index].frameCounter = [];
+        this.players[index].fIndex = [];
       });
     },
 
@@ -220,9 +273,6 @@ export default {
       let objScore = new Score();
       frames.forEach((frame, index) => {
         score += objScore.calculate(frames, frame, index);
-
-        console.log(score, "socore is ....");
-        console.log(this.throws.length);
         faramScore.push(score);
       });
 
