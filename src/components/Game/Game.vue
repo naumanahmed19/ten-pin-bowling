@@ -13,7 +13,7 @@
  
   <AddPlayersForm
     v-if="!isGameActive"
-    @start="handleStartNewGame"
+    @start="handleStartGame"
     @add="addPlayer"
     :players="players"
   />
