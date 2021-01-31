@@ -10,20 +10,17 @@
 
   <hr />
 
-  <div v-if="!isGameActive">
-    Add Players:
-    <input type="text" v-model="playerName" />
-    <button @click="handleAddPlayer">Add Player</button>
-  </div>
+ 
+  <AddPlayersForm
+    v-if="!isGameActive"
+    @start="handleStartNewGame"
+    @add="addPlayer"
+    :players="players"
+  />
 
-  <div v-if="!isGameActive && players.length">
-    <ul>
-      <li v-for="(player, index) in players" :key="index">
-        {{ player.name }}
-      </li>
-    </ul>
-    <button @click="handleStartGame">Start Game</button>
-  </div>
+
+
+
 
   <div v-if="isGameActive && players.length">
     {{ players[currentPlayer] }}
@@ -43,7 +40,7 @@
         <br />
         <br />
         <br />
-        {{ player.name }} | Wins  {{ player.wins }}
+        {{ player.name }} | Wins {{ player.wins }}
         <table border="1">
           <tr>
             <td v-for="(n, i) in 10" :key="i">
@@ -72,12 +69,14 @@ import ScoreBoard from "./ScoreBoard.vue";
 import Score from "./Score";
 import PlayerControls from "./PlayerControls.vue";
 import GameControls from "./GameControls.vue";
+import AddPlayersForm from './AddPlayersForm.vue';
 export default {
   name: "Game",
   components: {
     ScoreBoard,
     PlayerControls,
     GameControls,
+    AddPlayersForm,
   },
   data() {
     return {
@@ -145,36 +144,33 @@ export default {
     /**
      * Add New Player
      */
-    handleAddPlayer() {
-      if (this.playerName) {
+    addPlayer(name) {
+      if (name) {
         this.players.push({
-          name: this.playerName,
+          name: name,
           frames: [],
           faramScore: [],
           frameCounter: 0, //max 12
           fIndex: 0,
-          wins : 0,
+          wins: 0,
         });
       }
-
-      //reset field
-      this.playerName = "";
     },
     /**
      * Winner Selection
      */
-    selectWinner(){
+    selectWinner() {
       let highestScore = 0;
       let playerIndex;
-      this.players.forEach((player,index)=>{
+      this.players.forEach((player, index) => {
         let playerScore = this.getPlayerScore(index);
-         if(playerScore > highestScore ){
-            highestScore = playerScore;
-            playerIndex = index;
-         }
+        if (playerScore > highestScore) {
+          highestScore = playerScore;
+          playerIndex = index;
+        }
       });
 
-      this.players[playerIndex].wins++; 
+      this.players[playerIndex].wins++;
     },
 
     nextPlayerTurn() {
