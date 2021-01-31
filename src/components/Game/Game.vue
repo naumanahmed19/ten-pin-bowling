@@ -98,6 +98,9 @@ export default {
 
   computed:{
       throwsLeft(){
+        if(this.throws.length && this.throws[0] !='X'){
+          return 11 - this.throws[0];
+        }
         return 11;
       }
   },
@@ -145,13 +148,6 @@ export default {
      * Update frames with choices based on active player
      * 
      */
-    
-      format(v){
-        if(v === 'X') return 10;
-        if(v === '/') return 10;
-        return v;
-      },
-      
     handleThorw(pins){
 
 
