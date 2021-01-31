@@ -27,10 +27,8 @@
     <h3>Current Turn : {{ players[currentPlayer].name }}</h3>
     <button @click="changeTurn(1)">Change Turn</button>
 
-    <button v-for="(n, i) in throwsLeft" :key="n" @click="handleThorw(i)">
-      {{ i }}
-    </button>
-
+    
+      <PlayerControls :throws="throws" @click="handleThorw" /> 
     <ul v-if="players.length">
       <li v-for="(player, index) in players" :key="index">
         <br />
@@ -63,10 +61,12 @@
 <script>
 import ScoreBoard from "./ScoreBoard.vue";
 import Score from "./Score";
+import PlayerControls from './Controls.vue';
 export default {
   name: "Game",
   components: {
     ScoreBoard,
+    PlayerControls,
   },
   data() {
     return {
@@ -94,14 +94,7 @@ export default {
     };
   },
 
-  computed: {
-    throwsLeft() {
-      if (this.throws.length && this.throws[0] != "X") {
-        return 11 - this.throws[0];
-      }
-      return 11;
-    },
-  },
+
 
   methods: {
     /**
