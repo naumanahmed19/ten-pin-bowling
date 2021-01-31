@@ -10,6 +10,8 @@
 
   <hr />
 
+ 
+
   <div v-if="!isGameActive">
     Add Players:
     <input type="text" v-model="playerName" />
@@ -29,8 +31,13 @@
     {{ players[currentPlayer] }}
     <h3>Current Turn : {{ players[currentPlayer].name }}</h3>
 
-    <PlayerControls :throws="throws" @click="handleThorw" />
-    <ul v-if="players.length">
+    <PlayerControls v-if="isGameActive && !isGameOver" :throws="throws" @click="handleThorw"  />
+  </div>
+   <div v-if="isGameOver">Game Over </div>
+
+
+    <div v-if="isGameActive && players.length">
+    <ul>
       <li v-for="(player, index) in players" :key="index">
         <br />
         <br />
@@ -74,11 +81,13 @@ export default {
   data() {
     return {
       isGameActive: false,
+      isGameOver: false,
       playerName: "",
       currentPlayer: 0,
       previousValue: 0,
       activeFrameIndex: 0,
       throws: [],
+
 
       players: [
         // {
@@ -99,10 +108,11 @@ export default {
 
   methods: {
     /**
-     * Starting a game
+     * Starting a game with new players
      */
     handleStartGame() {
       this.isGameActive = true;
+      this.isGameOver=false;
       this.throws = [];
     },
 
@@ -112,8 +122,24 @@ export default {
      */
     handleStartNewGame() {
       this.isGameActive = false;
+      this.isGameOver=false;
       this.players = [];
       this.throws = [];
+    },
+
+     /**
+     * Replay A Game with same players
+     */
+    handleResetGame() {
+      this.throws = [];
+      this.isGameOver=false;
+
+      this.players.forEach((fram, index) => {
+        this.players[index].frames = [];
+        this.players[index].faramScore = [];
+        this.players[index].frameCounter = [];
+        this.players[index].fIndex = [];
+      });
     },
 
     /**
@@ -135,6 +161,8 @@ export default {
     },
 
     nextPlayerTurn() {
+
+       this.checkGameStatus();
       //before next go to next player
       this.players[this.currentPlayer].fIndex++;
 
@@ -146,8 +174,22 @@ export default {
         this.currentPlayer++;
       }
       this.throws = [];
+
+     
+
     },
 
+   /**
+     * Check if game is over
+     *
+     */
+    checkGameStatus(){
+      if(this.currentPlayer == this.players.length-1 && this.players[this.currentPlayer].frameCounter ==12){
+          console.log('Game Over');
+          this.isGameOver = true;
+      }
+    },
+    
     /**
      * Update frames with choices based on active player
      *
@@ -247,16 +289,6 @@ export default {
 
 
 
-    handleResetGame() {
-      this.throws = [];
-
-      this.players.forEach((fram, index) => {
-        this.players[index].frames = [];
-        this.players[index].faramScore = [];
-        this.players[index].frameCounter = [];
-        this.players[index].fIndex = [];
-      });
-    },
 
     getPlayerScore(index) {
       let { faramScore } = this.players[index];
