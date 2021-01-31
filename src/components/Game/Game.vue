@@ -56,6 +56,7 @@
           </tr>
         </table>
         {{ player.frames.length}}
+         {{ player.faramScore.length}}
       </li>
   </ul>
    
@@ -137,6 +138,7 @@ export default {
         name: this.playerName,
         frames:[],
         faramScore:[],
+        frameCounter: 0,
       });
       }
     
@@ -150,6 +152,12 @@ export default {
      */
     handleThorw(pins){
 
+      /**
+       * Allow max 12 frames
+       */
+      this.players[this.currentPlayer].frameCounter++;
+      let {frameCounter} = this.players[this.currentPlayer];
+      if(frameCounter > 12) return;
 
       if(this.isFrame(9) || this.isFrame(10) || this.isFrame(11) || this.isFrame(12)){
         if(pins==10){
