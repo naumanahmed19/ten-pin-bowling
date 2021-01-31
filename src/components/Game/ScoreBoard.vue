@@ -1,9 +1,7 @@
 <template>
   <div>
     <h1>ScoreBoard</h1>
-      <button v-for="n in frames" :key="n" @click="handleClick(n)">
-          {{n}}
-      </button>
+    
       <hr>
       Total Score : {{total}}
   </div>
