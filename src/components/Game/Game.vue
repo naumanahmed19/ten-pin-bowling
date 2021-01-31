@@ -1,6 +1,6 @@
 <template>
   <ScoreBoard />
-  
+  {{throws}}
   <div v-if="isGameActive">
   <button @click="handleStartNewGame">Start New Game</button>
   <button @click="handleResetGame" >Replay Game</button>
@@ -28,10 +28,16 @@
       <h3>Current Turn : {{players[currentPlayer].name}}</h3>
   <button @click="changeTurn(1)">Change Turn</button>
  
-  <ul>
+
+   <button v-for="(n,i) in throwsLeft" :key="n" @click="handleThorw(i)">
+        {{i}}
+    </button>
+
+
+  <ul v-if="players.length">
       <li v-for="(player,index) in players" :key="index">
         <br> <br> <br>
-        {{player.name}} | TotalScore : {{getScore(index)}}
+        {{player.name}} | 
         <table border="1">
           <tr>
             <td v-for="(n, i) in 10" :key="i" >
@@ -43,8 +49,13 @@
                 <!-- {{calculeFrameScore(player.frames,frame,index)}} -->
                
             </td>
+            <td>
+              Total
+              {{getPlayerScore(index)}}
+            </td>
           </tr>
         </table>
+        {{ player.frames.length}}
       </li>
   </ul>
    
@@ -63,8 +74,10 @@ export default {
     return {
       isGameActive: false,
       playerName: '',
-      currentPlayer : 0,
+      currentPlayer :0,
       previousValue: 0,
+      activeFrameIndex: 0,
+      throws:[],
   
       players: [
       // {
@@ -79,9 +92,14 @@ export default {
       //   faramScore:[],
         
       // },
-
     ],
     }
+  },
+
+  computed:{
+      throwsLeft(){
+        return 11;
+      }
   },
 
   methods: {
@@ -91,6 +109,7 @@ export default {
      */
     handleStartGame(){
       this.isGameActive = true;
+      this.throws = [];
     },
 
     /**
@@ -100,7 +119,11 @@ export default {
     handleStartNewGame(){
       this.isGameActive = false;
       this.players = [];
+      this.throws = [];
     },
+
+ 
+
 
     /**
      * Add New Player
@@ -118,7 +141,91 @@ export default {
       this.playerName ='';
     },
 
+    /**
+     * Update frames with choices based on active player
+     * 
+     */
+    
+      format(v){
+        if(v === 'X') return 10;
+        if(v === '/') return 10;
+        return v;
+      },
+      
+    handleThorw(pins){
+
+
+      if(this.isFrame(9) || this.isFrame(10) || this.isFrame(11) || this.isFrame(12)){
+        if(pins==10){
+           this.throws.push('X');
+        }
+        else if(this.throws[0] + pins == 10){
+          this.throws.push('/');
+        }else{
+           this.throws.push(pins);
+        }
+        this.updatePlayerFrame();
+
+    
+      }else{
+        if(pins==10){
+        this.throws.push('X');
+        this.updatePlayerFrame();
+      }else if(this.throws.length && (this.throws[0] + pins == 10)){
+           this.throws.push('/');
+           this.updatePlayerFrame();
+      }else{
+        this.throws.push(pins)
+        if(this.throws.length == 2){
+          this.updatePlayerFrame();
+        }
+      }
+      }
+
+      
+
+
+      
+
+      // if(this.throws.length == 2){
+      //   // this.updatePlayerFrame();
+      //   // this.updateActivePlayer();
+
+
+      //   //reset throws
+      //    this.throws = [];
+
+        
+      // }
+
+    },
+    isFrame(n){
+      return this.players[this.currentPlayer].frames.length == n;
+    },
+
+    updatePlayerFrame(){
+    
+     if(this.activeFrameIndex == 10){
+      this.players[this.currentPlayer].frames[9]= this.throws;
+  
+     }else{
+        this.players[this.currentPlayer].frames.push(this.throws);
+        if(this.activeFrameIndex <9) this.throws = [];
+        this.activeFrameIndex++;
+     }
+       this.players[this.currentPlayer].faramScore = [];
+       this.getScore(this.currentPlayer);
+    },
+
+    
+    updateActivePlayer(p){
+      this.currentPlayer = p; 
+    },
+
+
     handleResetGame(){
+      this.throws = [];
+
       this.players.forEach((fram,index)=>{
        this.players[index].frames = [];
          this.players[index].faramScore = [];
@@ -126,12 +233,9 @@ export default {
     },
 
 
-    changeTurn(p){
-      this.currentPlayer = p; 
-    },
-
-    updateScore(s){
-      this.players[this.currentPlayer].frames.push(s)
+    getPlayerScore(index){
+      let {faramScore} = this.players[index];
+      return faramScore.length ? faramScore[faramScore.length-1]:0;
     },
 
     getScore(index){
@@ -144,7 +248,9 @@ export default {
       let objScore = new Score();
       frames.forEach((frame,index) => {
         score += objScore.calculate(frames,frame,index);
-        console.log('Index:',index, score);
+
+        console.log(score,'socore is ....');
+        console.log(this.throws.length);
         faramScore.push(score);
       });
       
