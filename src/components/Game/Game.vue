@@ -1,10 +1,13 @@
 <template>
   <ScoreBoard />
   {{ throws }}
-  <div v-if="isGameActive">
-    <button @click="handleStartNewGame">Start New Game</button>
-    <button @click="handleResetGame">Replay Game</button>
-  </div>
+
+  <GameControls 
+    v-if="isGameActive" 
+    @new="handleStartNewGame" 
+    @replay="handleResetGame"
+  />
+
 
   <hr />
 
@@ -61,12 +64,14 @@
 <script>
 import ScoreBoard from "./ScoreBoard.vue";
 import Score from "./Score";
-import PlayerControls from './Controls.vue';
+import PlayerControls from "./Controls.vue";
+import GameControls from "./GameControls.vue";
 export default {
   name: "Game",
   components: {
     ScoreBoard,
     PlayerControls,
+    GameControls,
   },
   data() {
     return {
@@ -93,8 +98,6 @@ export default {
       ],
     };
   },
-
-
 
   methods: {
     /**
