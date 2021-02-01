@@ -1,6 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-50 w-100 p-10">
-    <Game />
+    <div class="max-w-7xl mx-auto pt-8">
+      <Game />
+    </div>
   </div>
 </template>
 
