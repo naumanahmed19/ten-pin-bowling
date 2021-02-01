@@ -17,11 +17,7 @@
     :throws="throws"
     @click="handleThorw"
   />
-  <Alert
-    v-if="isGameOver && winner"
-    title="Winner"
-    :message="winner"
-  />
+  <Alert v-if="isGameOver && winner" title="Winner" :message="winner" />
   <ScoreBoard
     v-if="isGameActive && players.length"
     :players="players"
@@ -51,22 +47,9 @@ export default {
       isGameActive: false,
       isGameOver: false,
       currentPlayer: 0,
-      winner: '',
+      winner: "",
       throws: [],
-      players: [
-        // {
-        //   name: 'Ahmad',
-        //   frames: [['X'],['X'],['X'],['X'],['X'],['X'],['X'],['X'],['X'],['X','X','X']],
-        //   faramScore:[],
-        //   frameCounter: 0,
-        // },
-        // {
-        //   name: 'Ali',
-        //   frames:[[8,0],[7,0],[5,3],[9,'/'],[9,'/'],['X'],[8,0],[5,1],[3,'/'],[9,0,0]],
-        //   faramScore:[],
-        //  frameCounter: 0,
-        // },
-      ],
+      players: [],
     };
   },
 
@@ -95,10 +78,11 @@ export default {
     handleResetGame() {
       this.reset();
       this.players.forEach((fram, index) => {
-        this.players[index].frames = [];
-        this.players[index].faramScore = [];
-        this.players[index].frameCounter = [];
-        this.players[index].fIndex = [];
+        let player = this.players[index];
+        player.frames = [];
+        player.faramScore = [];
+        player.frameCounter = 0;
+        player.fIndex = 0;
       });
     },
 
@@ -108,7 +92,7 @@ export default {
     reset() {
       this.throws = [];
       this.isGameOver = false;
-      this.winner = '';
+      this.winner = "";
     },
 
     /**
@@ -141,19 +125,16 @@ export default {
         }
       });
 
-      if(winnerIndex !== 'undefined'){
-        this.winner =  this.players[winnerIndex].name;
+      if (winnerIndex !== "undefined") {
+        this.winner = this.players[winnerIndex].name;
         this.players[winnerIndex].wins++;
       }
-   
     },
 
     nextPlayerTurn() {
       this.checkGameStatus();
       //before next go to next player
       this.players[this.currentPlayer].fIndex++;
-
-      console.log("move to next palyer");
 
       if (this.currentPlayer + 1 == this.players.length) {
         this.currentPlayer = 0;
@@ -183,42 +164,20 @@ export default {
      *
      */
     handleThorw(pins) {
-      /**
-       * Allow max 12 frames
-       */
-
       let { frameCounter } = this.players[this.currentPlayer];
-      if (frameCounter > 11) return;
-      console.log("out-----------------", frameCounter);
+      if (frameCounter > 11) return; //Allow max 12 frames
 
-      if (
-        this.isFrame(9) ||
-        this.isFrame(10) ||
-        this.isFrame(11) ||
-        this.isFrame(12)
-      ) {
-        if (pins == 10) {
-          this.throws.push("X");
-        } else if (this.throws[0] + pins == 10) {
-          this.throws.push("/");
-        } else {
-          this.throws.push(pins);
-        }
+      if (pins == 10) {
+        this.throws.push("X");
+      } else if (this.throws.length && this.throws[0] + pins == 10) {
+        this.throws.push("/");
       } else {
-        if (pins == 10) {
-          this.throws.push("X");
-        } else if (this.throws.length && this.throws[0] + pins == 10) {
-          this.throws.push("/");
-        } else {
-          this.throws.push(pins);
-        }
+        this.throws.push(pins);
       }
-      this.nextupdatePlayerFrame();
+      this.updatePlayerFrame();
     },
-    isFrame(n) {
-      return this.players[this.currentPlayer].frames.length == n;
-    },
-    nextupdatePlayerFrame() {
+
+    updatePlayerFrame() {
       let throws = [...this.throws];
 
       //push in frames - move to next frame - empty throws
@@ -248,7 +207,6 @@ export default {
         if (typeof this.players[this.currentPlayer].frames[9] == "undefined") {
           this.players[this.currentPlayer].frames.push(throws);
           this.players[this.currentPlayer].frameCounter++;
-          console.log("new value....");
         } else {
           this.players[this.currentPlayer].frames[9] = throws;
           this.players[this.currentPlayer].frameCounter++;

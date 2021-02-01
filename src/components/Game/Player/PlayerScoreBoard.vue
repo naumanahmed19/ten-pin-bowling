@@ -63,8 +63,8 @@ export default {
       default: 0,
     },
     playerScore: {
-      type: Number,
-      default: 0,
+      type: Function,
+      default: () => {},
     },
   },
 };

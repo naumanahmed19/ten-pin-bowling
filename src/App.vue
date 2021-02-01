@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import Game from './components/Game/Game.vue'
+import Game from "./components/Game/Game.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-   Game
+    Game,
   },
-}
+};
 </script>
