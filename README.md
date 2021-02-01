@@ -8,14 +8,14 @@
   <p align="center">
     A ten pin bowling score game calculator
     <br />
-    <a href="#"><strong>View Demo »</strong></a>
+    <a href="https://ten-pin-bowling-demo.vercel.app/"><strong>View Demo »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://ten-pin-bowling-demo.vercel.app/">View Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/naumanahmed19/ten-pin-bowling/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/naumanahmed19/ten-pin-bowling/issues">Request Feature</a>
   </p>
 </p>
 
