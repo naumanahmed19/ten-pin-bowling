@@ -5,7 +5,7 @@
     @replay="handleResetGame"
   />
 
-  <AddPlayersForm
+  <PlayersForm
     v-if="!isGameActive"
     @start="handleStartGame"
     @add="addPlayer"
@@ -31,11 +31,11 @@
 </template>
 
 <script>
-import ScoreBoard from "./ScoreBoard.vue";
+import ScoreBoard from "./Player/PlayerScoreBoard.vue";
 import Score from "./Score";
-import PlayerControls from "./PlayerControls.vue";
+import PlayerControls from "./Player/PlayerControls.vue";
 import GameControls from "./GameControls.vue";
-import AddPlayersForm from "./AddPlayersForm.vue";
+import PlayersForm from "./Player/PlayersForm.vue";
 import Alert from "../Common/Alert.vue";
 export default {
   name: "Game",
@@ -43,7 +43,7 @@ export default {
     ScoreBoard,
     PlayerControls,
     GameControls,
-    AddPlayersForm,
+    PlayersForm,
     Alert,
   },
   data() {
