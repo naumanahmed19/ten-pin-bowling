@@ -1,70 +1,33 @@
 <template>
-  <ScoreBoard />
-  {{ throws }}
-
   <GameControls
     v-if="isGameActive"
     @new="handleStartNewGame"
     @replay="handleResetGame"
   />
 
-  <hr />
+  <AddPlayersForm
+    v-if="!isGameActive"
+    @start="handleStartGame"
+    @add="addPlayer"
+    :players="players"
+  />
 
-  <div v-if="!isGameActive">
-    Add Players:
-    <input type="text" v-model="playerName" />
-    <button @click="handleAddPlayer">Add Player</button>
-  </div>
-
-  <div v-if="!isGameActive && players.length">
-    <ul>
-      <li v-for="(player, index) in players" :key="index">
-        {{ player.name }}
-      </li>
-    </ul>
-    <button @click="handleStartGame">Start Game</button>
-  </div>
-
-  <div v-if="isGameActive && players.length">
-    {{ players[currentPlayer] }}
-    <h3>Current Turn : {{ players[currentPlayer].name }}</h3>
-
-    <PlayerControls
-      v-if="isGameActive && !isGameOver"
-      :throws="throws"
-      @click="handleThorw"
-    />
-  </div>
-  <div v-if="isGameOver">Game Over</div>
-
-  <div v-if="isGameActive && players.length">
-    <ul>
-      <li v-for="(player, index) in players" :key="index">
-        <br />
-        <br />
-        <br />
-        {{ player.name }} | Wins  {{ player.wins }}
-        <table border="1">
-          <tr>
-            <td v-for="(n, i) in 10" :key="i">
-              {{ n }}
-              <hr />
-              {{ player.frames[i] }}
-              <hr />
-              {{ player.faramScore[i] }}
-              <!-- {{calculeFrameScore(player.frames,frame,index)}} -->
-            </td>
-            <td>
-              Total
-              {{ getPlayerScore(index) }}
-            </td>
-          </tr>
-        </table>
-        {{ player.frames.length }}
-        {{ player.faramScore.length }}
-      </li>
-    </ul>
-  </div>
+  <PlayerControls
+    v-if="isGameActive && !isGameOver && players.length"
+    :throws="throws"
+    @click="handleThorw"
+  />
+  <Alert
+    v-if="isGameOver && winner"
+    title="Winner"
+    :message="winner"
+  />
+  <ScoreBoard
+    v-if="isGameActive && players.length"
+    :players="players"
+    :active-player="currentPlayer"
+    :player-score="getPlayerScore"
+  />
 </template>
 
 <script>
@@ -72,23 +35,24 @@ import ScoreBoard from "./ScoreBoard.vue";
 import Score from "./Score";
 import PlayerControls from "./PlayerControls.vue";
 import GameControls from "./GameControls.vue";
+import AddPlayersForm from "./AddPlayersForm.vue";
+import Alert from "../Common/Alert.vue";
 export default {
   name: "Game",
   components: {
     ScoreBoard,
     PlayerControls,
     GameControls,
+    AddPlayersForm,
+    Alert,
   },
   data() {
     return {
       isGameActive: false,
       isGameOver: false,
-      playerName: "",
       currentPlayer: 0,
-      previousValue: 0,
-      activeFrameIndex: 0,
+      winner: '',
       throws: [],
-
       players: [
         // {
         //   name: 'Ahmad',
@@ -112,8 +76,7 @@ export default {
      */
     handleStartGame() {
       this.isGameActive = true;
-      this.isGameOver = false;
-      this.throws = [];
+      this.reset();
     },
 
     /**
@@ -122,18 +85,15 @@ export default {
      */
     handleStartNewGame() {
       this.isGameActive = false;
-      this.isGameOver = false;
       this.players = [];
-      this.throws = [];
+      this.reset();
     },
 
     /**
      * Replay A Game with same players
      */
     handleResetGame() {
-      this.throws = [];
-      this.isGameOver = false;
-
+      this.reset();
       this.players.forEach((fram, index) => {
         this.players[index].frames = [];
         this.players[index].faramScore = [];
@@ -143,38 +103,49 @@ export default {
     },
 
     /**
+     * Common Reset
+     */
+    reset() {
+      this.throws = [];
+      this.isGameOver = false;
+      this.winner = '';
+    },
+
+    /**
      * Add New Player
      */
-    handleAddPlayer() {
-      if (this.playerName) {
+    addPlayer(name) {
+      if (name) {
         this.players.push({
-          name: this.playerName,
+          name: name,
           frames: [],
           faramScore: [],
           frameCounter: 0, //max 12
           fIndex: 0,
-          wins : 0,
+          wins: 0,
         });
       }
-
-      //reset field
-      this.playerName = "";
     },
     /**
      * Winner Selection
      */
-    selectWinner(){
+    selectWinner() {
       let highestScore = 0;
-      let playerIndex;
-      this.players.forEach((player,index)=>{
+      let winnerIndex = undefined;
+      this.players.forEach((player, index) => {
         let playerScore = this.getPlayerScore(index);
-         if(playerScore > highestScore ){
-            highestScore = playerScore;
-            playerIndex = index;
-         }
+        if (playerScore > highestScore) {
+          highestScore = playerScore;
+          winnerIndex = index;
+          this.winner = player.name;
+        }
       });
 
-      this.players[playerIndex].wins++; 
+      if(winnerIndex !== 'undefined'){
+        this.winner =  this.players[winnerIndex].name;
+        this.players[winnerIndex].wins++;
+      }
+   
     },
 
     nextPlayerTurn() {
