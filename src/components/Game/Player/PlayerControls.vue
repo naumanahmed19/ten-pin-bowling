@@ -19,10 +19,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    isLastFrame:{
+      type: Boolean,
+      default: false,
+    }
   },
   computed: {
     throwsLeft() {
-      if (this.throws.length && this.throws[0] != "X") {
+      if (this.throws.length && this.throws[0] != "X" && !this.isLastFrame) {
         return 11 - this.throws[0];
       }
       return 11;

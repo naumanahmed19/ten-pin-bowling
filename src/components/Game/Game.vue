@@ -15,6 +15,7 @@
   <PlayerControls
     v-if="isGameActive && !isGameOver && players.length"
     :throws="throws"
+    :is-last-frame="players[this.currentPlayer].fIndex == 9"
     @click="handleThorw"
   />
   <Alert v-if="isGameOver && winner" title="Winner" :message="winner" />
