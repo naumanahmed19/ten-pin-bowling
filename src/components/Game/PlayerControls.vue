@@ -1,6 +1,8 @@
 <template>
-    <div>
-        <button v-for="(n, i) in throwsLeft" :key="n" @click="$emit('click',i)">
+    <div class="my-5">
+        <button 
+        class="py-2 mx-1 rounded-full h-10 w-10 border border-transparent shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        v-for="(n, i) in throwsLeft" :key="n" @click="$emit('click',i)">
               {{ i }}
     </button>
     </div>
@@ -9,7 +11,7 @@
 <script>
 
 export default {
- emits: ["click"],        
+  emits: ["click"],        
     props:{
         throws:{
             type: Array,
