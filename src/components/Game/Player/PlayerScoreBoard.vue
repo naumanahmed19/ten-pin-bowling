@@ -36,7 +36,7 @@
                 {{ f }}
               </p>
             </div>
-            <p class="font-bold mt-4">{{ player.faramScore[i] }}</p>
+            <p class="font-bold mt-4">{{ player.frameScore[i] }}</p>
           </div>
         </div>
         <div class="p-3 text-center border-l">

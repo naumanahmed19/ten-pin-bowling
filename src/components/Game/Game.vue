@@ -81,7 +81,7 @@ export default {
       this.players.forEach((fram, index) => {
         let player = this.players[index];
         player.frames = [];
-        player.faramScore = [];
+        player.frameScore = [];
         player.frameCounter = 0;
         player.fIndex = 0;
       });
@@ -104,7 +104,7 @@ export default {
         this.players.push({
           name: name,
           frames: [],
-          faramScore: [],
+          frameScore: [],
           frameCounter: 0, //max 12
           fIndex: 0,
           wins: 0,
@@ -217,7 +217,7 @@ export default {
       /**
        * Update frames on every chagne
        */
-      this.players[this.currentPlayer].faramScore = [];
+      this.players[this.currentPlayer].frameScore = [];
       this.getScore(this.currentPlayer);
 
       /**
@@ -230,21 +230,21 @@ export default {
     },
 
     getPlayerScore(index) {
-      let { faramScore } = this.players[index];
-      return faramScore.length ? faramScore[faramScore.length - 1] : 0;
+      let { frameScore } = this.players[index];
+      return frameScore.length ? frameScore[frameScore.length - 1] : 0;
     },
 
     getScore(index) {
-      let { frames, faramScore } = this.players[index];
-      return this.calculateScore(frames, faramScore);
+      let { frames, frameScore } = this.players[index];
+      return this.calculateScore(frames, frameScore);
     },
 
-    calculateScore(frames, faramScore) {
+    calculateScore(frames, frameScore) {
       let score = 0;
       let objScore = new Score();
       frames.forEach((frame, index) => {
         score += objScore.calculate(frames, frame, index);
-        faramScore.push(score);
+        frameScore.push(score);
       });
 
       return score;
