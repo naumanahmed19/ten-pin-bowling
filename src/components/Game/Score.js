@@ -1,6 +1,4 @@
  class Score{
-
-  constructor(){}
     
       calculate(frames,frame,index){
         let s = 0;
@@ -14,7 +12,7 @@
             s += 10 + this._spareBouns(frames,index);
         }
         else{
-          s += this._caulculateLastFrame(frame);
+          s += this._caulculateFrame(frame);
         }
         return s;
       }
@@ -28,10 +26,10 @@
           return frame ? frame.reduce((a,b)=>this._format(a)+this._format(b) , 0) : 0;
       }
   
-      _caulculateLastFrame(frame){
+      _caulculateFrame(frame){
         let s = 0;
           /**
-           * if last frame has spare 
+           * if frame has spare 
            */
           if(frame.includes( '/')){
              let spareIndex = frame.indexOf('/');
@@ -73,5 +71,4 @@
       }
 }
 
-//let score = new Score();
 export default Score; 
