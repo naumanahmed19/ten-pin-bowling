@@ -11,7 +11,6 @@
     @add="addPlayer"
     :players="players"
   />
-
   <PlayerControls
     v-if="isGameActive && !isGameOver && players.length"
     :throws="throws"
@@ -134,7 +133,7 @@ export default {
 
     nextPlayerTurn() {
       this.checkGameStatus();
-      //before next go to next player
+      //before go to next player
       this.players[this.currentPlayer].fIndex++;
 
       if (this.currentPlayer + 1 == this.players.length) {
@@ -188,8 +187,6 @@ export default {
           this.players[this.currentPlayer].frames.push(throws);
 
           this.players[this.currentPlayer].frameCounter++;
-
-          this.nextPlayerTurn();
         } else {
           if (throws.length == 1) {
             this.players[this.currentPlayer].frames.push(throws);
@@ -199,11 +196,13 @@ export default {
             this.players[this.currentPlayer].frames[length - 1].push(throws[1]);
 
             this.players[this.currentPlayer].frameCounter++;
+           // this.nextPlayerTurn();
+           
 
-            this.nextPlayerTurn();
           }
         }
       } else {
+
         //on last frame
         if (typeof this.players[this.currentPlayer].frames[9] == "undefined") {
           this.players[this.currentPlayer].frames.push(throws);
@@ -217,16 +216,20 @@ export default {
       /**
        * Update frames on every chagne
        */
-      this.players[this.currentPlayer].frameScore = [];
-      this.getScore(this.currentPlayer);
-
-      /**
-       * Switching player on last frame
-       */
-      if (this.players[this.currentPlayer].fIndex >= 9 && throws.length == 3) {
-        this.nextPlayerTurn();
+     
+      if (this.players[this.currentPlayer].fIndex >= 9 && throws.length < 3) {
+         
         this.getScore(this.currentPlayer);
       }
+      else if (this.players[this.currentPlayer].fIndex < 9 && throws.length < 2 && !throws.includes("X") ){
+          this.players[this.currentPlayer].frameScore = [];
+          this.getScore(this.currentPlayer);
+      }else{
+          this.players[this.currentPlayer].frameScore = [];
+          this.getScore(this.currentPlayer);
+          this.nextPlayerTurn();
+      }
+
     },
 
     getPlayerScore(index) {
@@ -246,7 +249,6 @@ export default {
         score += objScore.calculate(frames, frame, index);
         frameScore.push(score);
       });
-
       return score;
     },
   },
